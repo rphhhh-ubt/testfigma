@@ -186,7 +186,7 @@ export function MainPage() {
               <span className="main-folder-logo-art">art</span>
               <span className="main-folder-logo-collection">co ection</span>
               <Image
-                src="/figma-home/logo-glyph-desktop.svg"
+                src="/figma-home/logo-glyph-desktop.png"
                 alt=""
                 width={174}
                 height={120}
@@ -194,7 +194,7 @@ export function MainPage() {
                 aria-hidden
               />
               <Image
-                src="/figma-home/logo-glyph-mobile.svg"
+                src="/figma-home/logo-glyph-mobile.png"
                 alt=""
                 width={63}
                 height={43}
