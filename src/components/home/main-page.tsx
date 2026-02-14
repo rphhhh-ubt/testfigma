@@ -7,8 +7,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type CSSProperties,
-  type PointerEvent,
 } from "react";
 import {
   AnimatePresence,
@@ -45,7 +43,6 @@ const reveal = {
 const INITIAL_ZINE_VISIBLE = 5;
 const MOBILE_INITIAL_ZINE_VISIBLE = 3;
 const heroLines = ["we are/", "inclusive space for those", "who loves art"];
-const agendaSpotlightStyle = { "--mx": "50%", "--my": "50%" } as CSSProperties;
 
 export function MainPage() {
   const reducedMotion = useReducedMotion();
@@ -59,11 +56,14 @@ export function MainPage() {
   const heroBackgroundScale = useTransform(scrollYProgress, [0, 1], [1, 1.02]);
 
   const [shopCategory, setShopCategory] = useState<ShopCategory>("decor");
+  const [agendaStartIndex, setAgendaStartIndex] = useState(0);
   const [zineCategory, setZineCategory] = useState<(typeof zineCategories)[number]>(
     "All",
   );
   const [visibleZineCount, setVisibleZineCount] = useState(INITIAL_ZINE_VISIBLE);
   const [activeGalleryImage, setActiveGalleryImage] = useState(featuredGalleryImage);
+
+  const gallerySlides = useMemo(() => [featuredGalleryImage, ...galleryImages], []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 820px)");
@@ -101,10 +101,17 @@ export function MainPage() {
   const visibleZinePosts = filteredZinePosts.slice(0, visibleZineCount);
   const canLoadMoreZine = visibleZineCount < filteredZinePosts.length;
 
-  const visibleAgendaCards = useMemo(
-    () => (isCompact ? mainAgendaCards.slice(0, 2) : mainAgendaCards.slice(0, 4)),
-    [isCompact],
-  );
+  const visibleAgendaCards = useMemo(() => {
+    if (isCompact) {
+      return mainAgendaCards;
+    }
+
+    return Array.from({ length: 4 }, (_, index) => {
+      const cardIndex = (agendaStartIndex + index) % mainAgendaCards.length;
+
+      return mainAgendaCards[cardIndex];
+    });
+  }, [agendaStartIndex, isCompact]);
 
   const partnersRowTop = useMemo(
     () => (isCompact ? partnersTop.slice(0, 4) : partnersTop),
@@ -121,23 +128,36 @@ export function MainPage() {
     [isCompact, shopCategory],
   );
 
+  const activeGalleryIndex = useMemo(
+    () => gallerySlides.findIndex((image) => image === activeGalleryImage),
+    [activeGalleryImage, gallerySlides],
+  );
+
   const handleChangeZineCategory = (category: (typeof zineCategories)[number]) => {
     setZineCategory(category);
     setVisibleZineCount(isCompact ? MOBILE_INITIAL_ZINE_VISIBLE : INITIAL_ZINE_VISIBLE);
   };
 
-  const handleAgendaCardPointerMove = (event: PointerEvent<HTMLElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    event.currentTarget.style.setProperty("--mx", `${x}px`);
-    event.currentTarget.style.setProperty("--my", `${y}px`);
+  const handleAgendaPrev = () => {
+    setAgendaStartIndex((value) => (value - 1 + mainAgendaCards.length) % mainAgendaCards.length);
   };
 
-  const handleAgendaCardPointerLeave = (event: PointerEvent<HTMLElement>) => {
-    event.currentTarget.style.setProperty("--mx", "50%");
-    event.currentTarget.style.setProperty("--my", "50%");
+  const handleAgendaNext = () => {
+    setAgendaStartIndex((value) => (value + 1) % mainAgendaCards.length);
+  };
+
+  const handleGalleryPrev = () => {
+    const safeIndex = activeGalleryIndex < 0 ? 0 : activeGalleryIndex;
+    const prevIndex = (safeIndex - 1 + gallerySlides.length) % gallerySlides.length;
+
+    setActiveGalleryImage(gallerySlides[prevIndex]);
+  };
+
+  const handleGalleryNext = () => {
+    const safeIndex = activeGalleryIndex < 0 ? 0 : activeGalleryIndex;
+    const nextIndex = (safeIndex + 1) % gallerySlides.length;
+
+    setActiveGalleryImage(gallerySlides[nextIndex]);
   };
 
   return (
@@ -251,29 +271,38 @@ export function MainPage() {
               <motion.article
                 key={card.id}
                 className="main-agenda-card"
-                style={agendaSpotlightStyle}
                 initial={reducedMotion ? undefined : { opacity: 0, y: 20 }}
                 whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-8%" }}
                 transition={{ duration: 0.45, delay: index * 0.05, ease: "easeOut" }}
-                whileHover={reducedMotion ? undefined : { y: -5 }}
-                onPointerMove={handleAgendaCardPointerMove}
-                onPointerLeave={handleAgendaCardPointerLeave}
+                whileHover={reducedMotion || isCompact ? undefined : { y: -5 }}
               >
-                <Image src={card.image} alt={card.title} fill className="main-agenda-card-image" />
-                <div className="main-agenda-card-overlay" />
                 <div className="main-agenda-card-content">
                   <h3>{card.title}</h3>
+                  <span className="main-agenda-card-date">{card.date}</span>
                   <p>{card.description}</p>
-                  <div>
-                    <span>{card.type}</span>
-                    <span>{card.date}</span>
-                  </div>
                   <Link href={card.href}>See more</Link>
+                </div>
+
+                <div className="main-agenda-card-media">
+                  <Image src={card.image} alt={card.title} fill className="main-agenda-card-image" />
                 </div>
               </motion.article>
             ))}
           </div>
+
+          <div className="main-agenda-controls" aria-label="Agenda slider controls">
+            <button type="button" onClick={handleAgendaPrev} aria-label="Previous agenda cards">
+              ←
+            </button>
+            <button type="button" onClick={handleAgendaNext} aria-label="Next agenda cards">
+              →
+            </button>
+          </div>
+
+          <Link className="main-agenda-mobile-cta" href="/events/paradigm">
+            see full agenda
+          </Link>
         </div>
       </motion.section>
 
@@ -288,17 +317,21 @@ export function MainPage() {
       >
         <div className="main-container">
           <span className="main-label">About/</span>
-          <h2>
-            <span className="dark">We curate and organize</span>
+          <h2 className="main-about-title main-about-title-desktop">
+            <span className="main-about-highlight-line">we curate and organize</span> art events,
             <br />
-            <span className="light">art events, providing a stage</span>
+            providing a stage
             <br />
-            <span className="light">for self-expression/</span>
+            <span className="main-about-highlight-line">for self-expression/</span>
           </h2>
 
-          <Link className="main-about-cta" href="/about">
-            read more
-          </Link>
+          <h2 className="main-about-title main-about-title-mobile">
+            we curate and <span className="main-about-highlight">organize</span> art events,
+            <br />
+            providing a stage for
+            <br />
+            self-expression/
+          </h2>
 
           <div className="main-about-columns">
             <p>
@@ -306,6 +339,9 @@ export function MainPage() {
               perspectives. We believe that through creative interaction, society can become more open,
               understanding, and empowered.
             </p>
+
+            <div className="main-about-poster" aria-hidden />
+
             <p>
               Through our initiatives, we aim to foster an environment where diverse voices are not only
               heard but celebrated. Whether it&apos;s through art exhibitions, workshops, or performances,
@@ -313,6 +349,16 @@ export function MainPage() {
               life. By embracing diversity, we create a vibrant tapestry of ideas.
             </p>
           </div>
+
+          <p className="main-about-bottom-copy">
+            The art space is a unique platform designed to unite creative communities and foster
+            inclusivity. Our mission is to reveal the potential of art as a universal language capable of
+            connecting people from diverse backgrounds, abilities, and interests.
+          </p>
+
+          <Link className="main-about-cta" href="/about">
+            read more
+          </Link>
         </div>
       </motion.section>
 
@@ -324,9 +370,14 @@ export function MainPage() {
         variants={reveal}
         transition={{ duration: 0.55, ease: "easeOut" }}
       >
-        <div className="main-container main-gallery-grid">
-          <div className="main-gallery-left">
+        <div className="main-container">
+          <header className="main-gallery-head">
             <span className="main-label">Gallery/</span>
+            <Link href="/about">see more</Link>
+          </header>
+
+          <div className="main-gallery-grid">
+            <div className="main-gallery-left">
             <div className="main-gallery-thumbs">
               {galleryImages.map((image, index) => (
                 <button
@@ -336,46 +387,70 @@ export function MainPage() {
                   onClick={() => setActiveGalleryImage(image)}
                   aria-label={`Show gallery slide ${index + 1}`}
                 >
-                  <Image
-                    src={image}
-                    alt={`Gallery thumbnail ${index + 1}`}
-                    fill
-                    className="main-gallery-thumb-image"
-                  />
+                  <span className="main-gallery-thumb-media" aria-hidden>
+                    <Image
+                      src={image}
+                      alt={`Gallery thumbnail ${index + 1}`}
+                      fill
+                      className="main-gallery-thumb-image"
+                    />
+                  </span>
+                  <span className="main-gallery-thumb-index">{`0${index + 1}/`}</span>
                 </button>
               ))}
             </div>
-            <button type="button">drag</button>
-          </div>
-
-          <article className="main-gallery-feature">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeGalleryImage}
-                className="main-gallery-feature-media"
-                initial={reducedMotion ? undefined : { opacity: 0.42, scale: 1.04 }}
-                animate={reducedMotion ? undefined : { opacity: 1, scale: 1 }}
-                exit={reducedMotion ? undefined : { opacity: 0.4, scale: 0.98 }}
-                transition={{ duration: 0.45, ease: "easeOut" }}
-              >
-                <Image
-                  src={activeGalleryImage}
-                  alt="Main entrance to gallery"
-                  fill
-                  className="main-gallery-feature-image"
-                />
-              </motion.div>
-            </AnimatePresence>
-            <div className="main-gallery-feature-overlay" />
-            <div className="main-gallery-feature-content">
-              <h3>Main entrance to gallery</h3>
-              <p>
-                The true favorite spot for all visitors was created by two architects from New Zealand,
-                with Anita Redmaine gifting this sculpture as the centerpiece.
-              </p>
-              <Link href="/about">see more</Link>
+            <button type="button" className="main-gallery-drag">
+              drag
+            </button>
             </div>
-          </article>
+
+            <article className="main-gallery-feature">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeGalleryImage}
+                  className="main-gallery-feature-media"
+                  initial={reducedMotion ? undefined : { opacity: 0.42, scale: 1.04 }}
+                  animate={reducedMotion ? undefined : { opacity: 1, scale: 1 }}
+                  exit={reducedMotion ? undefined : { opacity: 0.4, scale: 0.98 }}
+                  transition={{ duration: 0.45, ease: "easeOut" }}
+                >
+                  <Image
+                    src={activeGalleryImage}
+                    alt="Main entrance to gallery"
+                    fill
+                    className="main-gallery-feature-image"
+                  />
+                </motion.div>
+              </AnimatePresence>
+              <div className="main-gallery-feature-overlay" />
+
+              <div className="main-gallery-mobile-controls" aria-label="Gallery controls">
+                <button type="button" onClick={handleGalleryPrev} aria-label="Previous slide">
+                  ←
+                </button>
+
+                <div className="main-gallery-mobile-dots" aria-hidden>
+                  {gallerySlides.map((slide, index) => (
+                    <span key={slide} className={index === activeGalleryIndex ? "is-active" : ""} />
+                  ))}
+                </div>
+
+                <button type="button" onClick={handleGalleryNext} aria-label="Next slide">
+                  →
+                </button>
+              </div>
+
+              <div className="main-gallery-feature-content">
+                <span className="main-gallery-feature-index">05/</span>
+                <h3>Main entrance to gallery</h3>
+                <p>
+                  The true favorite spot for all visitors was created by two architects from New Zealand,
+                  with Anita Redmaine gifting this sculpture as the centerpiece.
+                </p>
+                <Link href="/about">see more</Link>
+              </div>
+            </article>
+          </div>
         </div>
       </motion.section>
 
@@ -432,14 +507,16 @@ export function MainPage() {
             <div className="main-team-mobile-cards">
               {teamMobileCards.map((member) => (
                 <article key={member.name} className="main-team-mobile-card">
-                  <Image
-                    src="/figma-home/team-member-photo-1.png"
-                    alt={member.name}
-                    fill
-                    className="main-team-photo-image"
-                    style={{ objectPosition: member.imagePosition }}
-                  />
-                  <div className="main-team-mobile-overlay" />
+                  <div className={`main-team-mobile-photo-wrap ${member.grayscale ? "is-grayscale" : ""}`}>
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      fill
+                      className="main-team-photo-image"
+                      style={{ objectPosition: member.imagePosition }}
+                    />
+                  </div>
+
                   <div className="main-team-mobile-content">
                     <h3>{member.name}</h3>
                     <p>{member.role}</p>
@@ -492,10 +569,17 @@ export function MainPage() {
           </div>
 
           <div className="main-residents-mobile-table" aria-label="Residents mobile table">
+            {residentsMobileCollapsed.map((resident) => (
+              <article key={resident} className="main-residents-mobile-row">
+                <h3>{resident}</h3>
+                <span aria-hidden>↘</span>
+              </article>
+            ))}
+
             <article className="main-residents-mobile-open">
               <div className="main-residents-mobile-open-head">
                 <h3>{residentsMobileOpen.title}</h3>
-                <span aria-hidden>v</span>
+                <span aria-hidden>↗</span>
               </div>
 
               <div className="main-residents-mobile-open-body">
@@ -507,13 +591,6 @@ export function MainPage() {
                 ))}
               </div>
             </article>
-
-            {residentsMobileCollapsed.map((resident) => (
-              <article key={resident} className="main-residents-mobile-row">
-                <h3>{resident}</h3>
-                <span aria-hidden>{"<"}</span>
-              </article>
-            ))}
           </div>
         </div>
       </motion.section>

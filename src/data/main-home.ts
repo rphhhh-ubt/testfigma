@@ -15,7 +15,7 @@ export const mainAgendaCards: MainCard[] = [
     description:
       "The exhibition celebrates the diversity of ideas and personality through prosthetics as objects of art.",
     type: "Exhibition",
-    date: "12/03 - 28/03",
+    date: "07/03",
     image: "/figma-home/agenda-card-1.png",
     href: "/events/paradigm",
   },
@@ -23,9 +23,9 @@ export const mainAgendaCards: MainCard[] = [
     id: "paradigm",
     title: "para-digm",
     description:
-      "Reconstructing Faulkner's ideas in a new world full of technology, but not ready to expand borders.",
+      "Discover the new and rediscover the classics. We introduce you our most expected events in this season.",
     type: "Exhibition",
-    date: "16/03 - 23/03",
+    date: "12/04—28/04",
     image: "/figma-home/agenda-card-2.png",
     href: "/events/paradigm",
   },
@@ -33,9 +33,9 @@ export const mainAgendaCards: MainCard[] = [
     id: "small-things",
     title: "small things",
     description:
-      "Let's make a model of a fictitious city from clay under the guidance of an artist with cerebral palsy.",
+      "Let's make a model of a fictitious city from clay under the guidance of artist with cerebral palsy.",
     type: "Workshop",
-    date: "21/03",
+    date: "29/05",
     image: "/figma-home/agenda-card-3.png",
     href: "/events/small-things",
   },
@@ -43,9 +43,9 @@ export const mainAgendaCards: MainCard[] = [
     id: "sound-fury",
     title: "The Sound & the Fury",
     description:
-      "Children's production based on the famous fairy tale of the northern peoples.",
+      "Reconstructing Faulkner's ideas in a new world full of technology, but not ready to expand its borders",
     type: "Performance",
-    date: "15/03",
+    date: "09/06",
     image: "/figma-home/agenda-card-4.png",
     href: "/events/sound-fury",
   },
@@ -124,12 +124,15 @@ export const teamMobileCards = [
   {
     name: "Courtney Henry",
     role: "Operations Director",
+    image: "/figma-home/team-member-photo-1.png",
     imagePosition: "30% center",
   },
   {
     name: "Cody Fisher",
     role: "Creative Director",
-    imagePosition: "70% center",
+    image: "/figma-home/team-member-photo-2.jpg",
+    imagePosition: "50% center",
+    grayscale: true,
   },
 ];
 
