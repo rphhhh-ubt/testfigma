@@ -5,6 +5,10 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { navigationItems } from "@/data/navigation";
 
+interface HeaderProps {
+  tone?: "dark" | "light";
+}
+
 function Logo() {
   return (
     <Link className="logo-wrap" href="/" aria-label="ArtConnection home">
@@ -18,9 +22,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return navigationItems.map((item) => {
-    const isActive =
-      (pathname === "/" && item.label === "agenda") ||
-      (pathname === "/about" && item.label === "about");
+    const isActive = pathname === "/" && item.label === "agenda";
 
     return (
       <Link
@@ -35,11 +37,11 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   });
 }
 
-export function Header() {
+export function Header({ tone = "dark" }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="site-header">
+    <header className={`site-header ${tone === "light" ? "is-light" : ""}`}>
       <button
         className="menu-trigger"
         type="button"

@@ -5,7 +5,6 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { Footer } from "@/components/home/footer";
 import { Header } from "@/components/home/header";
-import { StatusBar } from "@/components/home/status-bar";
 import type { AgendaEvent } from "@/types/agenda";
 
 interface EventDetailsPageProps {
@@ -19,7 +18,6 @@ export function EventDetailsPage({ event, relatedEvents }: EventDetailsPageProps
   return (
     <div className="agenda-shell">
       <main className="agenda-page event-page">
-        <StatusBar />
         <Header />
 
         <section className="event-hero" aria-labelledby="event-title">

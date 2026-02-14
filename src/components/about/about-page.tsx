@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { Footer } from "@/components/home/footer";
 import { Header } from "@/components/home/header";
-import { StatusBar } from "@/components/home/status-bar";
 
 const principles = [
   {
@@ -37,7 +36,6 @@ export function AboutPage() {
   return (
     <div className="agenda-shell">
       <main className="agenda-page about-page">
-        <StatusBar />
         <Header />
 
         <section className="about-hero" aria-labelledby="about-title">

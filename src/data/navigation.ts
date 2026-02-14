@@ -5,9 +5,9 @@ export interface NavigationItem {
 
 export const navigationItems: NavigationItem[] = [
   { label: "agenda", href: "/#agenda" },
-  { label: "about", href: "/about" },
-  { label: "residents", href: "/about#residents" },
-  { label: "shop", href: "/about#shop" },
-  { label: "feed", href: "/#feed" },
+  { label: "about", href: "/#about" },
+  { label: "residents", href: "/#residents" },
+  { label: "shop", href: "/#shop" },
+  { label: "feed", href: "/#zine" },
   { label: "contact", href: "/#contact" },
 ];

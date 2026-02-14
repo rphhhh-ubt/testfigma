@@ -7,7 +7,6 @@ import { Footer } from "@/components/home/footer";
 import { Header } from "@/components/home/header";
 import { Hero } from "@/components/home/hero";
 import { MonthSelect } from "@/components/home/month-select";
-import { StatusBar } from "@/components/home/status-bar";
 import { TickerTape } from "@/components/home/ticker-tape";
 import { agendaEvents, allMonths } from "@/data/events";
 
@@ -47,8 +46,6 @@ export function AgendaPage() {
   return (
     <div className="agenda-shell">
       <main className="agenda-page">
-        <StatusBar />
-
         <motion.div
           variants={fadeUp}
           initial={reducedMotion ? undefined : "hidden"}
