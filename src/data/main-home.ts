@@ -70,33 +70,181 @@ export const galleryImages = [
 
 export const featuredGalleryImage = "/figma-home/gallery-image-5.png";
 
-export const teamMembers = [
-  { name: "Courtney Henry", role: "Art director" },
-  { name: "Cody Fisher", role: "Head of cultural programs" },
-  { name: "Leslie Alexander", role: "Education lead" },
-  { name: "Theresa Webb", role: "Community manager" },
-  { name: "Devon Lane", role: "Project producer" },
-  { name: "Ralph Edwards", role: "Operations lead" },
+export interface TeamRow {
+  number: string;
+  name: string;
+  role: string;
+  tone: "muted" | "dark";
+  expanded?: boolean;
+  fullBleed?: boolean;
+}
+
+export const teamRows: TeamRow[] = [
+  {
+    number: "01/",
+    name: "Cody Fisher",
+    role: "Creative Director",
+    tone: "muted",
+    expanded: true,
+  },
+  {
+    number: "02/",
+    name: "Courtney Henry",
+    role: "Operations Director",
+    tone: "dark",
+    fullBleed: true,
+  },
+  {
+    number: "03/",
+    name: "Jerome Bell",
+    role: "Project and Event Manager",
+    tone: "muted",
+  },
+  {
+    number: "04/",
+    name: "Leslie Alexander",
+    role: "Art manager",
+    tone: "muted",
+  },
+  {
+    number: "05/",
+    name: "Kristin Watson",
+    role: "Curator of inclusive ivents",
+    tone: "muted",
+  },
+  {
+    number: "06/",
+    name: "Dianne Russell",
+    role: "PR manager",
+    tone: "muted",
+  },
 ];
 
-export const residents = [
+export const teamMobileCards = [
   {
-    title: "Theatre troupe",
-    text: "The art project for people with Down syndrome. Directed by Barbara Fink and running for over 5 years.",
+    name: "Courtney Henry",
+    role: "Operations Director",
+    imagePosition: "30% center",
   },
   {
-    title: "Graphic novels",
-    text: "Creator from Lithuania making hand-drawn social novels with focus on disability inclusion.",
-  },
-  {
-    title: "Public speaker",
-    text: "A leading speaker at the Museum of Modern Art and the Parsons School of Design.",
-  },
-  {
-    title: "Rare editions",
-    text: "A shop featuring rare editions, collectible prints, and books with handcrafted covers.",
+    name: "Cody Fisher",
+    role: "Creative Director",
+    imagePosition: "70% center",
   },
 ];
+
+export interface ResidentsEntry {
+  name: string;
+  text: string;
+}
+
+export interface ResidentsDesktopCard {
+  title: string;
+  entries: ResidentsEntry[];
+}
+
+export const residentsDesktopCards: ResidentsDesktopCard[] = [
+  {
+    title: "Theatre troupe",
+    entries: [
+      {
+        name: "Occlusion Theatre",
+        text: "The art project for people with Down syndrome. Directed by Barbara Fink and promote for 5 years already.",
+      },
+      {
+        name: "Theatre Of Glow",
+        text: "The artist with intellectual dissabilities provides a choreographycal shows.",
+      },
+      {
+        name: "P.L.U.M",
+        text: "An independent troupe of like-minded individuals, performing contemporary dramas.",
+      },
+      {
+        name: "World of Shadows",
+        text: 'A renowned South American troupe specializing in the art of "shadow theater."',
+      },
+    ],
+  },
+  {
+    title: "Visual Artists",
+    entries: [
+      {
+        name: "Elliot Moss",
+        text: "Creator from Lithuania, who make graphical novels by hand about social issues.",
+      },
+      {
+        name: "Ennie Hall",
+        text: "Sculptor and artist whose work addresses the body and its capabilities.",
+      },
+      {
+        name: "Big Apple Project",
+        text: "A group of independent local artists whose work can be seen in many museums around the world.",
+      },
+    ],
+  },
+  {
+    title: "Public talk lectors",
+    entries: [
+      {
+        name: "Broke Miccio",
+        text: "A leading speaker at the Museum of Modern Art and the Parsons School of Design.",
+      },
+      {
+        name: "Gabriela Bañuelos",
+        text: "A public figure advocating for inclusivity in the social sphere.",
+      },
+      {
+        name: "Ashley Masse",
+        text: "A professor of philosophy and author of self-development books.",
+      },
+      {
+        name: "Ashley Alexander",
+        text: "An author and publicist, a researcher in the field of cognitive biases.",
+      },
+    ],
+  },
+  {
+    title: "HandMade Shopesists",
+    entries: [
+      {
+        name: "PLAYA`S",
+        text: "A shop featuring rare editions, collectible prints, and books with handcrafted covers.",
+      },
+      {
+        name: "AbyStore",
+        text: "Home decor and more. All items are handmade, and the proceeds from purchases go to charity.",
+      },
+      {
+        name: "COMMITED",
+        text: "Find new unique pieces for your personal style by designer Fred Audry and Lana Holmes",
+      },
+    ],
+  },
+];
+
+export const residentsMobileCollapsed = [
+  "Theatre troupe",
+  "Visual Artists",
+  "Public talk lectors",
+];
+
+export const residentsMobileOpen = {
+  title: "HandMade Shopes",
+  rows: [
+    {
+      name: "PLAYA`S",
+      text: "A shop featuring rare editions, collectible prints, and books with handcrafted covers.",
+    },
+    {
+      name: "AbyStore",
+      text: "Home decor and more. All items are handmade, and the proceeds from purchases go to charity.",
+    },
+    {
+      name: "COMMITED",
+      text: "Find new unique pieces for your personal style by designer Fred Audry and Lana Holmes",
+    },
+  ],
+};
 
 export const partnersTop = [
   "Time LLC",

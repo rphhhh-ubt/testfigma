@@ -25,10 +25,13 @@ import {
   mainAgendaCards,
   partnersBottom,
   partnersTop,
-  residents,
+  residentsDesktopCards,
+  residentsMobileCollapsed,
+  residentsMobileOpen,
   shopCategories,
   shopItems,
-  teamMembers,
+  teamMobileCards,
+  teamRows,
   type ShopCategory,
   zineCategories,
   zinePosts,
@@ -102,20 +105,6 @@ export function MainPage() {
     () => (isCompact ? mainAgendaCards.slice(0, 2) : mainAgendaCards.slice(0, 4)),
     [isCompact],
   );
-
-  const visibleTeamMembers = useMemo(
-    () => teamMembers,
-    [],
-  );
-
-  const visibleResidents = useMemo(
-    () => residents,
-    [],
-  );
-
-  const mobileTeamMembers = useMemo(() => teamMembers.slice(0, 2), []);
-  const mobileResidentsCollapsed = useMemo(() => residents.slice(1, 4), []);
-  const mobileResidentsExpanded = residents[0];
 
   const partnersRowTop = useMemo(
     () => (isCompact ? partnersTop.slice(0, 4) : partnersTop),
@@ -200,7 +189,7 @@ export function MainPage() {
                     aria-hidden
                   />
                   <Image
-                    src="/figma-home/logo-glyph-mobile.png"
+                    src="/figma-home/logo-glyph-mobile@4x.png"
                     alt=""
                     width={63}
                     height={43}
@@ -410,25 +399,45 @@ export function MainPage() {
 
           <div className="main-team-table">
             <div className="main-team-list main-team-list-desktop">
-              {visibleTeamMembers.map((member) => (
+              {teamRows.map((member) => (
                 <article
                   key={member.name}
-                  className={`main-team-row ${member.name === "Cody Fisher" ? "is-expanded" : ""}`}
+                  className={`main-team-row ${member.expanded ? "is-expanded" : ""} ${
+                    member.fullBleed ? "is-full-bleed" : ""
+                  } ${member.tone === "dark" ? "is-dark" : "is-muted"}`}
                 >
-                  <h3>{member.name}</h3>
-                  <p>{member.role}</p>
+                  <div className="main-team-row-left">
+                    <span>{member.number}</span>
+
+                    {member.expanded ? (
+                      <div className="main-team-row-image-wrap" aria-hidden>
+                        <Image
+                          src="/figma-home/team-member-photo-1.png"
+                          alt=""
+                          fill
+                          className="main-team-row-image"
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="main-team-row-right">
+                    <h3>{member.name}</h3>
+                    <p>{member.role}</p>
+                  </div>
                 </article>
               ))}
             </div>
 
             <div className="main-team-mobile-cards">
-              {mobileTeamMembers.map((member) => (
+              {teamMobileCards.map((member) => (
                 <article key={member.name} className="main-team-mobile-card">
                   <Image
                     src="/figma-home/team-member-photo-1.png"
                     alt={member.name}
                     fill
                     className="main-team-photo-image"
+                    style={{ objectPosition: member.imagePosition }}
                   />
                   <div className="main-team-mobile-overlay" />
                   <div className="main-team-mobile-content">
@@ -466,10 +475,18 @@ export function MainPage() {
           </Link>
 
           <div className="main-residents-grid main-residents-grid-desktop">
-            {visibleResidents.map((resident) => (
+            {residentsDesktopCards.map((resident) => (
               <article key={resident.title}>
                 <h3>{resident.title}</h3>
-                <p>{resident.text}</p>
+
+                <div className="main-residents-card-body">
+                  {resident.entries.map((entry) => (
+                    <div key={`${resident.title}-${entry.name}`} className="main-residents-entry">
+                      <h4>{entry.name}</h4>
+                      <p>{entry.text}</p>
+                    </div>
+                  ))}
+                </div>
               </article>
             ))}
           </div>
@@ -477,15 +494,23 @@ export function MainPage() {
           <div className="main-residents-mobile-table" aria-label="Residents mobile table">
             <article className="main-residents-mobile-open">
               <div className="main-residents-mobile-open-head">
-                <h3>{mobileResidentsExpanded.title}</h3>
+                <h3>{residentsMobileOpen.title}</h3>
                 <span aria-hidden>v</span>
               </div>
-              <p>{mobileResidentsExpanded.text}</p>
+
+              <div className="main-residents-mobile-open-body">
+                {residentsMobileOpen.rows.map((row) => (
+                  <div key={row.name} className="main-residents-mobile-open-row">
+                    <h4>{row.name}</h4>
+                    <p>{row.text}</p>
+                  </div>
+                ))}
+              </div>
             </article>
 
-            {mobileResidentsCollapsed.map((resident) => (
-              <article key={resident.title} className="main-residents-mobile-row">
-                <h3>{resident.title}</h3>
+            {residentsMobileCollapsed.map((resident) => (
+              <article key={resident} className="main-residents-mobile-row">
+                <h3>{resident}</h3>
                 <span aria-hidden>{"<"}</span>
               </article>
             ))}

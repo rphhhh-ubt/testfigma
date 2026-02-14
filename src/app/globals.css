@@ -1154,10 +1154,10 @@ a {
 
 .main-team-row {
   min-height: 71px;
-  padding: 22px 0;
+  padding: 14px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.32);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 20px;
 }
@@ -1184,11 +1184,63 @@ a {
   letter-spacing: -0.04em;
 }
 
+.main-team-row-left {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+}
+
+.main-team-row-left > span {
+  font-family: var(--font-display), sans-serif;
+  font-size: 24px;
+  line-height: 0.84;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.main-team-row-image-wrap {
+  position: relative;
+  width: 174px;
+  height: 174px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.main-team-row-image {
+  object-fit: cover;
+  object-position: center;
+}
+
+.main-team-row-right {
+  margin-left: auto;
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+
 .main-team-row.is-expanded {
   width: min(1600px, 100vw);
+  min-height: 214px;
   margin-left: calc((1200px - min(1600px, 100vw)) / 2);
   padding-left: calc((min(1600px, 100vw) - 1200px) / 2);
   padding-right: 0;
+  align-items: center;
+}
+
+.main-team-row.is-full-bleed {
+  width: min(1600px, 100vw);
+  margin-left: calc((1200px - min(1600px, 100vw)) / 2);
+  padding-left: calc((min(1600px, 100vw) - 1200px) / 2);
+  padding-right: calc((min(1600px, 100vw) - 1200px) / 2);
+}
+
+.main-team-row.is-dark {
+  background: rgba(0, 0, 0, 0.42);
+}
+
+.main-team-row.is-muted {
+  background: transparent;
 }
 
 .main-team-photo-image {
@@ -1252,6 +1304,9 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.22);
   padding: 12px;
   min-height: 277px;
+  display: grid;
+  align-content: start;
+  gap: 10px;
 }
 
 .main-residents-grid article:nth-child(even) {
@@ -1267,9 +1322,28 @@ a {
 }
 
 .main-residents-grid p {
-  margin: 10px 0 0;
+  margin: 0;
   font-size: 14px;
   line-height: 1.4;
+}
+
+.main-residents-card-body {
+  display: grid;
+  gap: 12px;
+}
+
+.main-residents-entry {
+  display: grid;
+  gap: 5px;
+}
+
+.main-residents-entry h4 {
+  margin: 0;
+  text-transform: uppercase;
+  font-family: var(--font-display), sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
 
 .main-residents-mobile-table {
@@ -1315,6 +1389,31 @@ a {
   line-height: 1.15;
   letter-spacing: -0.04em;
   color: var(--white);
+}
+
+.main-residents-mobile-open-body {
+  display: grid;
+  gap: 12px;
+  padding: 12px 0 16px;
+}
+
+.main-residents-mobile-open-row {
+  display: grid;
+  gap: 8px;
+}
+
+.main-residents-mobile-open-row h4 {
+  margin: 0;
+  text-transform: uppercase;
+  font-family: var(--font-display), sans-serif;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--white);
+}
+
+.main-residents-mobile-open-row p {
+  margin: 0;
 }
 
 .main-residents-mobile-row {
@@ -1609,6 +1708,13 @@ a {
     padding-left: 0;
   }
 
+  .main-team-row.is-full-bleed {
+    width: 100%;
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
   .main-agenda-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -1661,13 +1767,15 @@ a {
   }
 
   .main-folder-copy {
-    margin-top: 110px;
+    margin-top: 72px;
   }
 
   .main-folder-logo {
-    width: 336px;
-    font-size: 100px;
-    line-height: 0.86;
+    position: relative;
+    width: 339px;
+    height: 94px;
+    font-size: 31px;
+    line-height: 1;
     text-align: left;
   }
 
@@ -1677,20 +1785,26 @@ a {
   }
 
   .main-folder-logo-art {
-    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
     font-size: 100px;
+    line-height: 0.86;
   }
 
   .main-folder-logo-collection {
+    position: absolute;
+    left: 0;
+    top: 51px;
     display: inline-flex;
     margin-left: 0;
-    margin-top: -2px;
+    margin-top: 0;
   }
 
   .main-folder-logo-glyph-slot {
     width: 63px;
     height: 43px;
-    transform: translateY(7px);
+    transform: none;
   }
 
   .main-folder-logo-glyph-desktop {
@@ -1703,6 +1817,7 @@ a {
     height: 43px;
     margin: 0;
     transform: none;
+    image-rendering: auto;
   }
 
   .main-folder-copy h1 {
@@ -1713,7 +1828,8 @@ a {
 
   .main-folder-subtitle {
     max-width: 340px;
-    font-size: 23px;
+    font-size: 14px;
+    line-height: 1;
     text-align: right;
   }
 
@@ -1807,8 +1923,7 @@ a {
   }
 
   .main-team-table {
-    grid-template-columns: 173px 171px;
-    gap: 2px;
+    display: block;
   }
 
   .main-team-list-desktop {
