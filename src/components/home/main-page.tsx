@@ -113,8 +113,13 @@ export function MainPage() {
     [isCompact],
   );
 
-  const visiblePartners = useMemo(
-    () => (isCompact ? [...partnersTop, ...partnersBottom].slice(0, 8) : [...partnersTop, ...partnersBottom]),
+  const partnersRowTop = useMemo(
+    () => (isCompact ? partnersTop.slice(0, 4) : partnersTop),
+    [isCompact],
+  );
+
+  const partnersRowBottom = useMemo(
+    () => (isCompact ? partnersBottom.slice(0, 4) : partnersBottom),
     [isCompact],
   );
 
@@ -180,8 +185,22 @@ export function MainPage() {
             <p className="main-folder-logo">
               <span className="main-folder-logo-art">art</span>
               <span className="main-folder-logo-collection">co ection</span>
-              <span className="main-folder-logo-symbol main-folder-logo-symbol-desktop" aria-hidden />
-              <span className="main-folder-logo-symbol main-folder-logo-symbol-mobile" aria-hidden />
+              <Image
+                src="/figma-home/logo-glyph-desktop.svg"
+                alt=""
+                width={174}
+                height={120}
+                className="main-folder-logo-symbol-desktop"
+                aria-hidden
+              />
+              <Image
+                src="/figma-home/logo-glyph-mobile.svg"
+                alt=""
+                width={63}
+                height={43}
+                className="main-folder-logo-symbol-mobile"
+                aria-hidden
+              />
             </p>
             <h1>
               {heroLines.map((line, index) => (
@@ -448,12 +467,24 @@ export function MainPage() {
             &amp; foster inclusivity/
           </h2>
 
-          <div className="main-partners-grid">
-            {visiblePartners.map((partner) => (
-              <article key={partner} className="main-partners-card">
-                {partner}
-              </article>
-            ))}
+          <div className="main-partners-marquee">
+            <div className="main-partners-track">
+              {[...partnersRowTop, ...partnersRowTop].map((partner, index) => (
+                <article key={`${partner}-${index}`} className="main-partners-card">
+                  {partner}
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="main-partners-marquee reverse">
+            <div className="main-partners-track">
+              {[...partnersRowBottom, ...partnersRowBottom].map((partner, index) => (
+                <article key={`${partner}-${index}`} className="main-partners-card">
+                  {partner}
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
