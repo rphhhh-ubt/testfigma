@@ -675,6 +675,8 @@ a {
 }
 
 .main-folder-logo {
+  position: relative;
+  width: min(1196px, 100%);
   margin: 0;
   color: var(--lime);
   text-transform: uppercase;
@@ -686,24 +688,17 @@ a {
   text-align: center;
 }
 
-.main-folder-logo > span {
-  display: block;
+.main-folder-logo-art,
+.main-folder-logo-collection {
+  display: inline;
 }
 
 .main-folder-logo-collection {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 6px;
-  font-size: 31px;
-  line-height: 0.86;
-  letter-spacing: -0.07em;
+  margin-left: 14px;
 }
 
 .main-folder-logo-symbol {
-  display: inline-block;
-  width: 52px;
-  height: 30px;
-  transform: translateY(-2px);
+  position: absolute;
   background: linear-gradient(
     90deg,
     transparent 8%,
@@ -715,6 +710,18 @@ a {
     var(--lime) 74%,
     transparent 74%
   );
+}
+
+.main-folder-logo-symbol-desktop {
+  display: inline-block;
+  width: 174px;
+  height: 120px;
+  left: 505px;
+  top: -18px;
+}
+
+.main-folder-logo-symbol-mobile {
+  display: none;
 }
 
 .main-folder-copy h1 {
@@ -1507,17 +1514,37 @@ a {
   }
 
   .main-folder-logo {
+    width: 336px;
     font-size: 100px;
     line-height: 0.86;
+    text-align: left;
   }
 
+  .main-folder-logo-art,
   .main-folder-logo-collection {
+    display: block;
     font-size: 31px;
   }
 
-  .main-folder-logo-symbol {
-    width: 52px;
-    height: 30px;
+  .main-folder-logo-art {
+    font-size: 100px;
+  }
+
+  .main-folder-logo-collection {
+    margin-left: 0;
+    margin-top: -2px;
+  }
+
+  .main-folder-logo-symbol-desktop {
+    display: none;
+  }
+
+  .main-folder-logo-symbol-mobile {
+    display: inline-block;
+    width: 63px;
+    height: 43px;
+    left: 81px;
+    top: 88px;
   }
 
   .main-folder-copy h1 {

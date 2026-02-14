@@ -179,11 +179,9 @@ export function MainPage() {
           >
             <p className="main-folder-logo">
               <span className="main-folder-logo-art">art</span>
-              <span className="main-folder-logo-collection">
-                <span>co</span>
-                <span className="main-folder-logo-symbol" aria-hidden />
-                <span>ection</span>
-              </span>
+              <span className="main-folder-logo-collection">co ection</span>
+              <span className="main-folder-logo-symbol main-folder-logo-symbol-desktop" aria-hidden />
+              <span className="main-folder-logo-symbol main-folder-logo-symbol-mobile" aria-hidden />
             </p>
             <h1>
               {heroLines.map((line, index) => (
