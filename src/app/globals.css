@@ -791,7 +791,7 @@ a {
 .main-residents,
 .main-partners,
 .main-shop {
-  background: var(--graphite);
+  background: var(--black);
   color: var(--white);
 }
 
@@ -1292,7 +1292,7 @@ a {
 
 .main-partners {
   min-height: 548px;
-  background: var(--graphite);
+  background: var(--black);
   color: var(--white);
   overflow: hidden;
 }
@@ -1530,8 +1530,9 @@ a {
   background: var(--lime);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 0 0 0;
+  justify-content: flex-start;
+  position: relative;
+  padding: 0 28px 0 0;
 }
 
 .main-residents-mobile-open-head h3 {
@@ -1543,15 +1544,16 @@ a {
   color: var(--black);
 }
 
-.main-residents-mobile-open-head span {
-  width: 22px;
-  height: 22px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--black);
-  font-size: 14px;
-  font-weight: 700;
+.main-residents-mobile-open-head::after {
+  content: "";
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-top: 1.5px solid var(--black);
+  border-right: 1.5px solid var(--black);
+  transform: translateY(-50%) rotate(-45deg);
 }
 
 .main-residents-mobile-open p {
@@ -1592,7 +1594,9 @@ a {
   border-bottom: 1px solid #999999;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  position: relative;
+  padding-right: 28px;
 }
 
 .main-residents-mobile-row h3 {
@@ -1604,15 +1608,16 @@ a {
   text-transform: capitalize;
 }
 
-.main-residents-mobile-row span {
-  width: 22px;
-  height: 22px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--white);
-  font-size: 12px;
-  opacity: 0.8;
+.main-residents-mobile-row::after {
+  content: "";
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.8);
+  border-right: 1.5px solid rgba(255, 255, 255, 0.8);
+  transform: translateY(-50%) rotate(135deg);
 }
 
 .main-partners-marquee {
@@ -2351,14 +2356,15 @@ a {
 
   .main-residents-mobile-open-head {
     min-height: 40px;
-    padding: 0 0 0 2px;
+    padding: 0 30px 0 2px;
   }
 
-  .main-residents-mobile-open-head span,
-  .main-residents-mobile-row span {
-    width: 24px;
-    height: 24px;
-    font-size: 18px;
+  .main-residents-mobile-open-head::after,
+  .main-residents-mobile-row::after {
+    width: 12px;
+    height: 12px;
+    border-top-width: 2px;
+    border-right-width: 2px;
   }
 
   .main-residents-mobile-open-row {

@@ -572,14 +572,12 @@ export function MainPage() {
             {residentsMobileCollapsed.map((resident) => (
               <article key={resident} className="main-residents-mobile-row">
                 <h3>{resident}</h3>
-                <span aria-hidden>↘</span>
               </article>
             ))}
 
             <article className="main-residents-mobile-open">
               <div className="main-residents-mobile-open-head">
                 <h3>{residentsMobileOpen.title}</h3>
-                <span aria-hidden>↗</span>
               </div>
 
               <div className="main-residents-mobile-open-body">
