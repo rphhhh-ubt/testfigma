@@ -53,7 +53,7 @@ export function MainPage() {
     offset: ["start start", "end start"],
   });
   const heroBackgroundY = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  const heroBackgroundScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  const heroBackgroundScale = useTransform(scrollYProgress, [0, 1], [1, 1.02]);
 
   const [shopCategory, setShopCategory] = useState<ShopCategory>("decor");
   const [zineCategory, setZineCategory] = useState<(typeof zineCategories)[number]>(
@@ -104,14 +104,18 @@ export function MainPage() {
   );
 
   const visibleTeamMembers = useMemo(
-    () => (isCompact ? teamMembers.slice(0, 2) : teamMembers),
-    [isCompact],
+    () => teamMembers,
+    [],
   );
 
   const visibleResidents = useMemo(
-    () => (isCompact ? residents.slice(0, 3) : residents),
-    [isCompact],
+    () => residents,
+    [],
   );
+
+  const mobileTeamMembers = useMemo(() => teamMembers.slice(0, 2), []);
+  const mobileResidentsCollapsed = useMemo(() => residents.slice(1, 4), []);
+  const mobileResidentsExpanded = residents[0];
 
   const partnersRowTop = useMemo(
     () => (isCompact ? partnersTop.slice(0, 4) : partnersTop),
@@ -153,7 +157,7 @@ export function MainPage() {
         <motion.div
           className="main-folder-bg-wrap"
           style={
-            reducedMotion
+            reducedMotion || isCompact
               ? undefined
               : {
                   y: heroBackgroundY,
@@ -186,22 +190,24 @@ export function MainPage() {
               <span className="main-folder-logo-art">art</span>
               <span className="main-folder-logo-collection">
                 <span>co</span>
-                <Image
-                  src="/figma-home/logo-glyph-desktop.png"
-                  alt=""
-                  width={174}
-                  height={120}
-                  className="main-folder-logo-glyph main-folder-logo-glyph-desktop"
-                  aria-hidden
-                />
-                <Image
-                  src="/figma-home/logo-glyph-mobile.png"
-                  alt=""
-                  width={63}
-                  height={43}
-                  className="main-folder-logo-glyph main-folder-logo-glyph-mobile"
-                  aria-hidden
-                />
+                <span className="main-folder-logo-glyph-slot" aria-hidden>
+                  <Image
+                    src="/figma-home/logo-glyph-desktop.png"
+                    alt=""
+                    width={174}
+                    height={120}
+                    className="main-folder-logo-glyph main-folder-logo-glyph-desktop"
+                    aria-hidden
+                  />
+                  <Image
+                    src="/figma-home/logo-glyph-mobile.png"
+                    alt=""
+                    width={63}
+                    height={43}
+                    className="main-folder-logo-glyph main-folder-logo-glyph-mobile"
+                    aria-hidden
+                  />
+                </span>
                 <span>ection</span>
               </span>
             </p>
@@ -296,11 +302,9 @@ export function MainPage() {
           <h2>
             <span className="dark">We curate and organize</span>
             <br />
-            <span className="light">art events,</span>
+            <span className="light">art events, providing a stage</span>
             <br />
-            <span className="light">providing a stage</span>
-            <br />
-            <span className="dark">for self-expression/</span>
+            <span className="light">for self-expression/</span>
           </h2>
 
           <Link className="main-about-cta" href="/about">
@@ -309,14 +313,15 @@ export function MainPage() {
 
           <div className="main-about-columns">
             <p>
-              The art space is a platform designed to unite creative communities and foster inclusivity.
-              Our mission is to reveal the potential of art as a universal language capable of connecting
-              people from diverse backgrounds, abilities, and interests.
+              Our goal is to become a place where everyone can find inspiration and reconsider their
+              perspectives. We believe that through creative interaction, society can become more open,
+              understanding, and empowered.
             </p>
             <p>
-              Our goal is to become a place where everyone can find inspiration and reconsider perspectives.
-              We believe that through creative interaction, society can become more open, understanding,
-              and empowered.
+              Through our initiatives, we aim to foster an environment where diverse voices are not only
+              heard but celebrated. Whether it&apos;s through art exhibitions, workshops, or performances,
+              we strive to highlight the unique perspectives and talents of individuals from all walks of
+              life. By embracing diversity, we create a vibrant tapestry of ideas.
             </p>
           </div>
         </div>
@@ -404,22 +409,34 @@ export function MainPage() {
           </h2>
 
           <div className="main-team-table">
-            <div className="main-team-list">
+            <div className="main-team-list main-team-list-desktop">
               {visibleTeamMembers.map((member) => (
-                <article key={member.name}>
+                <article
+                  key={member.name}
+                  className={`main-team-row ${member.name === "Cody Fisher" ? "is-expanded" : ""}`}
+                >
                   <h3>{member.name}</h3>
                   <p>{member.role}</p>
                 </article>
               ))}
             </div>
 
-            <div className="main-team-photo">
-              <Image
-                src="/figma-home/team-member-photo-1.png"
-                alt="Team portrait"
-                fill
-                className="main-team-photo-image"
-              />
+            <div className="main-team-mobile-cards">
+              {mobileTeamMembers.map((member) => (
+                <article key={member.name} className="main-team-mobile-card">
+                  <Image
+                    src="/figma-home/team-member-photo-1.png"
+                    alt={member.name}
+                    fill
+                    className="main-team-photo-image"
+                  />
+                  <div className="main-team-mobile-overlay" />
+                  <div className="main-team-mobile-content">
+                    <h3>{member.name}</h3>
+                    <p>{member.role}</p>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </div>
@@ -448,11 +465,28 @@ export function MainPage() {
             became our resident
           </Link>
 
-          <div className="main-residents-grid">
+          <div className="main-residents-grid main-residents-grid-desktop">
             {visibleResidents.map((resident) => (
               <article key={resident.title}>
                 <h3>{resident.title}</h3>
                 <p>{resident.text}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="main-residents-mobile-table" aria-label="Residents mobile table">
+            <article className="main-residents-mobile-open">
+              <div className="main-residents-mobile-open-head">
+                <h3>{mobileResidentsExpanded.title}</h3>
+                <span aria-hidden>v</span>
+              </div>
+              <p>{mobileResidentsExpanded.text}</p>
+            </article>
+
+            {mobileResidentsCollapsed.map((resident) => (
+              <article key={resident.title} className="main-residents-mobile-row">
+                <h3>{resident.title}</h3>
+                <span aria-hidden>{"<"}</span>
               </article>
             ))}
           </div>
