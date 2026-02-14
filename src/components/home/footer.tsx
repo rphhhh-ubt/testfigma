@@ -1,8 +1,9 @@
-import { navigationItems } from "@/data/events";
+import Link from "next/link";
+import { navigationItems } from "@/data/navigation";
 
 export function Footer() {
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" id="contact">
       <div className="footer-brand">ArtConnection inclusive space</div>
 
       <div className="footer-line" />
@@ -16,9 +17,9 @@ export function Footer() {
       <div className="footer-bottom">
         <nav aria-label="Footer navigation">
           {navigationItems.map((item) => (
-            <a key={item} href="#">
-              {item}
-            </a>
+            <Link key={item.label} href={item.href}>
+              {item.label}
+            </Link>
           ))}
         </nav>
 

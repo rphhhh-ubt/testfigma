@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import type { AgendaEvent } from "@/types/agenda";
 
@@ -17,8 +18,8 @@ export function EventCard({ event, index }: EventCardProps) {
       className={`event-card event-${event.size}`}
       initial={reducedMotion ? undefined : { opacity: 0, y: 20 }}
       whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10%" }}
-      transition={{ duration: 0.55, delay: index * 0.045, ease: "easeOut" }}
+      viewport={{ once: true, margin: "-12%" }}
+      transition={{ duration: 0.5, delay: index * 0.04, ease: "easeOut" }}
       whileHover={reducedMotion ? undefined : { y: -6 }}
     >
       <Image
@@ -36,12 +37,13 @@ export function EventCard({ event, index }: EventCardProps) {
 
         <div className="event-meta">
           <span>{event.category}</span>
+          <span>{event.location}</span>
           <span className="event-date">{event.date}</span>
         </div>
 
-        <button className="event-cta" type="button">
+        <Link className="event-cta" href={`/events/${event.id}`}>
           See more
-        </button>
+        </Link>
       </div>
     </motion.article>
   );

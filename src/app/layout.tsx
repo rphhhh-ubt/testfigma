@@ -15,8 +15,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ArtConnection - Agenda",
-  description: "Modern responsive agenda page inspired by Figma design",
+  title: {
+    default: "ArtConnection",
+    template: "%s | ArtConnection",
+  },
+  description: "Contemporary cultural agenda with responsive interactive layout",
 };
 
 export default function RootLayout({
