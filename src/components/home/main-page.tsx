@@ -99,7 +99,7 @@ export function MainPage() {
   const canLoadMoreZine = visibleZineCount < filteredZinePosts.length;
 
   const visibleAgendaCards = useMemo(
-    () => (isCompact ? mainAgendaCards.slice(0, 2) : mainAgendaCards),
+    () => (isCompact ? mainAgendaCards.slice(0, 2) : mainAgendaCards.slice(0, 4)),
     [isCompact],
   );
 
@@ -178,8 +178,12 @@ export function MainPage() {
             transition={{ duration: 0.65, ease: "easeOut" }}
           >
             <p className="main-folder-logo">
-              <span>art</span>
-              <span>co ection</span>
+              <span className="main-folder-logo-art">art</span>
+              <span className="main-folder-logo-collection">
+                <span>co</span>
+                <span className="main-folder-logo-symbol" aria-hidden />
+                <span>ection</span>
+              </span>
             </p>
             <h1>
               {heroLines.map((line, index) => (

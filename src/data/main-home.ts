@@ -75,6 +75,8 @@ export const teamMembers = [
   { name: "Cody Fisher", role: "Head of cultural programs" },
   { name: "Leslie Alexander", role: "Education lead" },
   { name: "Theresa Webb", role: "Community manager" },
+  { name: "Devon Lane", role: "Project producer" },
+  { name: "Ralph Edwards", role: "Operations lead" },
 ];
 
 export const residents = [
