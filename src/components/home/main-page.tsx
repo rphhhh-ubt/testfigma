@@ -184,23 +184,26 @@ export function MainPage() {
           >
             <p className="main-folder-logo">
               <span className="main-folder-logo-art">art</span>
-              <span className="main-folder-logo-collection">co ection</span>
-              <Image
-                src="/figma-home/logo-glyph-desktop.png"
-                alt=""
-                width={174}
-                height={120}
-                className="main-folder-logo-symbol-desktop"
-                aria-hidden
-              />
-              <Image
-                src="/figma-home/logo-glyph-mobile.png"
-                alt=""
-                width={63}
-                height={43}
-                className="main-folder-logo-symbol-mobile"
-                aria-hidden
-              />
+              <span className="main-folder-logo-collection">
+                <span>co</span>
+                <Image
+                  src="/figma-home/logo-glyph-desktop.png"
+                  alt=""
+                  width={174}
+                  height={120}
+                  className="main-folder-logo-glyph main-folder-logo-glyph-desktop"
+                  aria-hidden
+                />
+                <Image
+                  src="/figma-home/logo-glyph-mobile.png"
+                  alt=""
+                  width={63}
+                  height={43}
+                  className="main-folder-logo-glyph main-folder-logo-glyph-mobile"
+                  aria-hidden
+                />
+                <span>ection</span>
+              </span>
             </p>
             <h1>
               {heroLines.map((line, index) => (
