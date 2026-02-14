@@ -2,8 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent,
+} from "react";
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { Footer } from "@/components/home/footer";
 import { Header } from "@/components/home/header";
 import {
@@ -26,15 +39,53 @@ const reveal = {
   visible: { opacity: 1, y: 0 },
 };
 
-const INITIAL_ZINE_VISIBLE = 4;
+const INITIAL_ZINE_VISIBLE = 5;
+const MOBILE_INITIAL_ZINE_VISIBLE = 3;
+const heroLines = ["we are/", "inclusive space for those", "who loves art"];
+const agendaSpotlightStyle = { "--mx": "50%", "--my": "50%" } as CSSProperties;
 
 export function MainPage() {
   const reducedMotion = useReducedMotion();
+  const [isCompact, setIsCompact] = useState(false);
+  const heroRef = useRef<HTMLElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroBackgroundY = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const heroBackgroundScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+
   const [shopCategory, setShopCategory] = useState<ShopCategory>("decor");
   const [zineCategory, setZineCategory] = useState<(typeof zineCategories)[number]>(
     "All",
   );
   const [visibleZineCount, setVisibleZineCount] = useState(INITIAL_ZINE_VISIBLE);
+  const [activeGalleryImage, setActiveGalleryImage] = useState(featuredGalleryImage);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 820px)");
+
+    const syncCompact = () => {
+      const nextIsCompact = mediaQuery.matches;
+
+      setIsCompact((prevIsCompact) => {
+        if (prevIsCompact !== nextIsCompact) {
+          setVisibleZineCount(
+            nextIsCompact ? MOBILE_INITIAL_ZINE_VISIBLE : INITIAL_ZINE_VISIBLE,
+          );
+        }
+
+        return nextIsCompact;
+      });
+    };
+
+    syncCompact();
+    mediaQuery.addEventListener("change", syncCompact);
+
+    return () => {
+      mediaQuery.removeEventListener("change", syncCompact);
+    };
+  }, []);
 
   const filteredZinePosts = useMemo(() => {
     if (zineCategory === "All") {
@@ -47,22 +98,73 @@ export function MainPage() {
   const visibleZinePosts = filteredZinePosts.slice(0, visibleZineCount);
   const canLoadMoreZine = visibleZineCount < filteredZinePosts.length;
 
+  const visibleAgendaCards = useMemo(
+    () => (isCompact ? mainAgendaCards.slice(0, 2) : mainAgendaCards),
+    [isCompact],
+  );
+
+  const visibleTeamMembers = useMemo(
+    () => (isCompact ? teamMembers.slice(0, 2) : teamMembers),
+    [isCompact],
+  );
+
+  const visibleResidents = useMemo(
+    () => (isCompact ? residents.slice(0, 3) : residents),
+    [isCompact],
+  );
+
+  const visiblePartners = useMemo(
+    () => (isCompact ? [...partnersTop, ...partnersBottom].slice(0, 8) : [...partnersTop, ...partnersBottom]),
+    [isCompact],
+  );
+
+  const visibleShopImages = useMemo(
+    () => (isCompact ? shopItems[shopCategory].slice(0, 2) : shopItems[shopCategory]),
+    [isCompact, shopCategory],
+  );
+
   const handleChangeZineCategory = (category: (typeof zineCategories)[number]) => {
     setZineCategory(category);
-    setVisibleZineCount(INITIAL_ZINE_VISIBLE);
+    setVisibleZineCount(isCompact ? MOBILE_INITIAL_ZINE_VISIBLE : INITIAL_ZINE_VISIBLE);
+  };
+
+  const handleAgendaCardPointerMove = (event: PointerEvent<HTMLElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    event.currentTarget.style.setProperty("--mx", `${x}px`);
+    event.currentTarget.style.setProperty("--my", `${y}px`);
+  };
+
+  const handleAgendaCardPointerLeave = (event: PointerEvent<HTMLElement>) => {
+    event.currentTarget.style.setProperty("--mx", "50%");
+    event.currentTarget.style.setProperty("--my", "50%");
   };
 
   return (
     <div className="main-home">
-      <section className="main-folder" aria-label="Hero section">
-        <Image
-          src="/figma-home/folder-hero-bg.png"
-          alt="ArtConnection hero"
-          fill
-          priority
-          className="main-folder-bg"
-          sizes="100vw"
-        />
+      <section ref={heroRef} className="main-folder" aria-label="Hero section">
+        <motion.div
+          className="main-folder-bg-wrap"
+          style={
+            reducedMotion
+              ? undefined
+              : {
+                  y: heroBackgroundY,
+                  scale: heroBackgroundScale,
+                }
+          }
+        >
+          <Image
+            src="/figma-home/folder-hero-bg.png"
+            alt="ArtConnection hero"
+            fill
+            priority
+            className="main-folder-bg"
+            sizes="100vw"
+          />
+        </motion.div>
         <div className="main-folder-overlay" />
 
         <div className="main-container main-folder-inner">
@@ -75,15 +177,32 @@ export function MainPage() {
             animate={reducedMotion ? undefined : "visible"}
             transition={{ duration: 0.65, ease: "easeOut" }}
           >
-            <p className="main-folder-logo">art co ection</p>
+            <p className="main-folder-logo">
+              <span>art</span>
+              <span>co ection</span>
+            </p>
             <h1>
-              we are/
-              <br />
-              inclusive space for those
-              <br />
-              who loves art
+              {heroLines.map((line, index) => (
+                <span key={line} className="main-folder-line">
+                  <motion.span
+                    initial={
+                      reducedMotion ? undefined : { opacity: 0, y: 22, filter: "blur(4px)" }
+                    }
+                    animate={
+                      reducedMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }
+                    }
+                    transition={{
+                      duration: 0.55,
+                      delay: 0.18 + index * 0.09,
+                      ease: "easeOut",
+                    }}
+                  >
+                    {line}
+                  </motion.span>
+                </span>
+              ))}
             </h1>
-            <p>Discover the new and rediscover the classic</p>
+            <p className="main-folder-subtitle">Discover the new and rediscover the classic</p>
           </motion.div>
         </div>
       </section>
@@ -109,15 +228,18 @@ export function MainPage() {
           </header>
 
           <div className="main-agenda-grid">
-            {mainAgendaCards.map((card, index) => (
+            {visibleAgendaCards.map((card, index) => (
               <motion.article
                 key={card.id}
                 className="main-agenda-card"
+                style={agendaSpotlightStyle}
                 initial={reducedMotion ? undefined : { opacity: 0, y: 20 }}
                 whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-8%" }}
                 transition={{ duration: 0.45, delay: index * 0.05, ease: "easeOut" }}
                 whileHover={reducedMotion ? undefined : { y: -5 }}
+                onPointerMove={handleAgendaCardPointerMove}
+                onPointerLeave={handleAgendaCardPointerLeave}
               >
                 <Image src={card.image} alt={card.title} fill className="main-agenda-card-image" />
                 <div className="main-agenda-card-overlay" />
@@ -157,6 +279,10 @@ export function MainPage() {
             <span className="dark">for self-expression/</span>
           </h2>
 
+          <Link className="main-about-cta" href="/about">
+            read more
+          </Link>
+
           <div className="main-about-columns">
             <p>
               The art space is a platform designed to unite creative communities and foster inclusivity.
@@ -185,26 +311,43 @@ export function MainPage() {
             <span className="main-label">Gallery/</span>
             <div className="main-gallery-thumbs">
               {galleryImages.map((image, index) => (
-                <div className="main-gallery-thumb" key={image}>
+                <button
+                  type="button"
+                  className={`main-gallery-thumb ${activeGalleryImage === image ? "is-active" : ""}`}
+                  key={image}
+                  onClick={() => setActiveGalleryImage(image)}
+                  aria-label={`Show gallery slide ${index + 1}`}
+                >
                   <Image
                     src={image}
                     alt={`Gallery thumbnail ${index + 1}`}
                     fill
                     className="main-gallery-thumb-image"
                   />
-                </div>
+                </button>
               ))}
             </div>
             <button type="button">drag</button>
           </div>
 
           <article className="main-gallery-feature">
-            <Image
-              src={featuredGalleryImage}
-              alt="Main entrance to gallery"
-              fill
-              className="main-gallery-feature-image"
-            />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeGalleryImage}
+                className="main-gallery-feature-media"
+                initial={reducedMotion ? undefined : { opacity: 0.42, scale: 1.04 }}
+                animate={reducedMotion ? undefined : { opacity: 1, scale: 1 }}
+                exit={reducedMotion ? undefined : { opacity: 0.4, scale: 0.98 }}
+                transition={{ duration: 0.45, ease: "easeOut" }}
+              >
+                <Image
+                  src={activeGalleryImage}
+                  alt="Main entrance to gallery"
+                  fill
+                  className="main-gallery-feature-image"
+                />
+              </motion.div>
+            </AnimatePresence>
             <div className="main-gallery-feature-overlay" />
             <div className="main-gallery-feature-content">
               <h3>Main entrance to gallery</h3>
@@ -238,7 +381,7 @@ export function MainPage() {
 
           <div className="main-team-table">
             <div className="main-team-list">
-              {teamMembers.map((member) => (
+              {visibleTeamMembers.map((member) => (
                 <article key={member.name}>
                   <h3>{member.name}</h3>
                   <p>{member.role}</p>
@@ -282,7 +425,7 @@ export function MainPage() {
           </Link>
 
           <div className="main-residents-grid">
-            {residents.map((resident) => (
+            {visibleResidents.map((resident) => (
               <article key={resident.title}>
                 <h3>{resident.title}</h3>
                 <p>{resident.text}</p>
@@ -302,20 +445,12 @@ export function MainPage() {
             <br />
             &amp; foster inclusivity/
           </h2>
-        </div>
 
-        <div className="main-partners-marquee">
-          <div className="main-partners-track">
-            {[...partnersTop, ...partnersTop].map((partner, index) => (
-              <span key={`${partner}-${index}`}>{partner}</span>
-            ))}
-          </div>
-        </div>
-
-        <div className="main-partners-marquee reverse">
-          <div className="main-partners-track">
-            {[...partnersBottom, ...partnersBottom].map((partner, index) => (
-              <span key={`${partner}-${index}`}>{partner}</span>
+          <div className="main-partners-grid">
+            {visiblePartners.map((partner) => (
+              <article key={partner} className="main-partners-card">
+                {partner}
+              </article>
             ))}
           </div>
         </div>
@@ -358,7 +493,7 @@ export function MainPage() {
           </div>
 
           <div className="main-shop-grid">
-            {shopItems[shopCategory].map((image, index) => (
+            {visibleShopImages.map((image, index) => (
               <div className="main-shop-item" key={`${image}-${index}`}>
                 <Image src={image} alt={`${shopCategory} item ${index + 1}`} fill className="main-shop-item-image" />
               </div>
@@ -412,7 +547,7 @@ export function MainPage() {
             onClick={() => setVisibleZineCount((count) => Math.min(count + 2, filteredZinePosts.length))}
             disabled={!canLoadMoreZine}
           >
-            {canLoadMoreZine ? "load more" : "all posts loaded"}
+            {canLoadMoreZine ? (isCompact ? "show more" : "load more") : "all posts loaded"}
           </button>
         </div>
       </motion.section>

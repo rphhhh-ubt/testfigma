@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { navigationItems } from "@/data/navigation";
 
@@ -18,27 +19,13 @@ function Logo() {
   );
 }
 
-function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
-  const pathname = usePathname();
-
-  return navigationItems.map((item) => {
-    const isActive = pathname === "/" && item.label === "agenda";
-
-    return (
-      <Link
-        key={item.label}
-        href={item.href}
-        className={isActive ? "nav-active" : undefined}
-        onClick={onNavigate}
-      >
-        {item.label}
-      </Link>
-    );
-  });
-}
-
 export function Header({ tone = "dark" }: HeaderProps) {
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+
+  const activeItem = pathname === "/" ? "agenda" : null;
+  const highlightedItem = hoveredItem ?? activeItem;
 
   return (
     <header className={`site-header ${tone === "light" ? "is-light" : ""}`}>
@@ -63,14 +50,46 @@ export function Header({ tone = "dark" }: HeaderProps) {
       <div className="header-language">language</div>
 
       <nav className="header-nav" aria-label="Main">
-        <NavLinks />
+        {navigationItems.map((item) => {
+          const isActive = activeItem === item.label;
+          const isHighlighted = highlightedItem === item.label;
+
+          return (
+            <div
+              key={item.label}
+              className="header-nav-item"
+              onMouseEnter={() => setHoveredItem(item.label)}
+              onMouseLeave={() => setHoveredItem(null)}
+            >
+              {isHighlighted ? (
+                <motion.span
+                  layoutId={`nav-indicator-${tone}`}
+                  className={`header-nav-indicator ${tone === "light" ? "is-light" : ""}`}
+                  transition={{ type: "spring", stiffness: 390, damping: 32, mass: 0.8 }}
+                />
+              ) : null}
+
+              <Link href={item.href} className={isActive ? "nav-active" : undefined}>
+                {item.label}
+              </Link>
+            </div>
+          );
+        })}
       </nav>
 
       <nav
         className={`mobile-nav ${mobileMenuOpen ? "is-open" : ""}`}
         aria-label="Mobile main"
       >
-        <NavLinks onNavigate={() => setMobileMenuOpen(false)} />
+        {navigationItems.map((item) => (
+          <Link
+            key={item.label}
+            href={item.href}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            {item.label}
+          </Link>
+        ))}
       </nav>
     </header>
   );

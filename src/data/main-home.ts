@@ -94,10 +94,6 @@ export const residents = [
     title: "Rare editions",
     text: "A shop featuring rare editions, collectible prints, and books with handcrafted covers.",
   },
-  {
-    title: "Choreography lab",
-    text: "Artist with intellectual disabilities creating experimental choreography and open rehearsals.",
-  },
 ];
 
 export const partnersTop = [
@@ -106,7 +102,6 @@ export const partnersTop = [
   "Open Society",
   "A11y Art Fund",
   "Culture Next",
-  "Vision Studio",
 ];
 
 export const partnersBottom = [
@@ -115,7 +110,6 @@ export const partnersBottom = [
   "Dialog Foundation",
   "State Museum",
   "Craft House",
-  "Future Media",
 ];
 
 export const shopCategories = ["clothes", "books", "decor", "cards", "other"] as const;
@@ -196,5 +190,17 @@ export const zinePosts: ZinePost[] = [
     category: "podcast",
     title: "Audio room: community-driven curation",
     image: "/figma-home/zine-card-5.png",
+  },
+  {
+    id: "z-6",
+    category: "News",
+    title: "Open call: spring residency shortlist",
+    image: "/figma-home/zine-card-3.png",
+  },
+  {
+    id: "z-7",
+    category: "Culture",
+    title: "How galleries redesign for inclusive flow",
+    image: "/figma-home/zine-card-4.png",
   },
 ];
