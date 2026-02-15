@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import {
   AnimatePresence,
   motion,
@@ -43,6 +44,13 @@ const reveal = {
 const INITIAL_ZINE_VISIBLE = 5;
 const MOBILE_INITIAL_ZINE_VISIBLE = 3;
 const heroLines = ["we are/", "inclusive space for those", "who loves art"];
+const textReveal = {
+  hidden: { opacity: 0, y: 18, filter: "blur(6px)" },
+  visible: { opacity: 1, y: 0, filter: "blur(0px)" },
+};
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value));
 
 export function MainPage() {
   const reducedMotion = useReducedMotion();
@@ -163,8 +171,33 @@ export function MainPage() {
     setActiveGalleryImage(gallerySlides[nextIndex]);
   };
 
+  const handleGalleryDragPointerMove = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (reducedMotion || isCompact) {
+      return;
+    }
+
+    const target = event.currentTarget;
+    const rect = target.getBoundingClientRect();
+    const deltaX = event.clientX - (rect.left + rect.width / 2);
+    const deltaY = event.clientY - (rect.top + rect.height / 2);
+    const magnetX = clamp(deltaX * 0.18, -16, 16);
+    const magnetY = clamp(deltaY * 0.18, -16, 16);
+
+    target.style.setProperty("--drag-magnet-x", `${magnetX}px`);
+    target.style.setProperty("--drag-magnet-y", `${magnetY}px`);
+  };
+
+  const resetGalleryDragMagnet = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const target = event.currentTarget;
+
+    target.style.setProperty("--drag-magnet-x", "0px");
+    target.style.setProperty("--drag-magnet-y", "0px");
+  };
+
   return (
     <div className="main-home">
+      <div className="main-home-noise" aria-hidden />
+
       <section ref={heroRef} className="main-folder" aria-label="Hero section">
         <motion.div
           className="main-folder-bg-wrap"
@@ -244,7 +277,15 @@ export function MainPage() {
                 </span>
               ))}
             </h1>
-            <p className="main-folder-subtitle">Discover the new and rediscover the classic</p>
+            <motion.p
+              className="main-folder-subtitle"
+              variants={textReveal}
+              initial={reducedMotion ? undefined : "hidden"}
+              animate={reducedMotion ? undefined : "visible"}
+              transition={{ duration: 0.5, delay: 0.52, ease: "easeOut" }}
+            >
+              Discover the new and rediscover the classic
+            </motion.p>
           </motion.div>
         </div>
       </section>
@@ -337,11 +378,17 @@ export function MainPage() {
           </h2>
 
           <div className="main-about-columns">
-            <p>
+            <motion.p
+              variants={textReveal}
+              initial={reducedMotion ? undefined : "hidden"}
+              whileInView={reducedMotion ? undefined : "visible"}
+              viewport={{ once: true, margin: "-6%" }}
+              transition={{ duration: 0.46, delay: 0.06, ease: "easeOut" }}
+            >
               Our goal is to become a place where everyone can find inspiration and reconsider their
               perspectives. We believe that through creative interaction, society can become more open,
               understanding, and empowered.
-            </p>
+            </motion.p>
 
             <div className="main-about-poster" aria-hidden>
               <Image
@@ -352,19 +399,32 @@ export function MainPage() {
               />
             </div>
 
-            <p>
+            <motion.p
+              variants={textReveal}
+              initial={reducedMotion ? undefined : "hidden"}
+              whileInView={reducedMotion ? undefined : "visible"}
+              viewport={{ once: true, margin: "-6%" }}
+              transition={{ duration: 0.46, delay: 0.12, ease: "easeOut" }}
+            >
               Through our initiatives, we aim to foster an environment where diverse voices are not only
               heard but celebrated. Whether it&apos;s through art exhibitions, workshops, or performances,
               we strive to highlight the unique perspectives and talents of individuals from all walks of
               life. By embracing diversity, we create a vibrant tapestry of ideas.
-            </p>
+            </motion.p>
           </div>
 
-          <p className="main-about-bottom-copy">
+          <motion.p
+            className="main-about-bottom-copy"
+            variants={textReveal}
+            initial={reducedMotion ? undefined : "hidden"}
+            whileInView={reducedMotion ? undefined : "visible"}
+            viewport={{ once: true, margin: "-6%" }}
+            transition={{ duration: 0.46, delay: 0.16, ease: "easeOut" }}
+          >
             The art space is a unique platform designed to unite creative communities and foster
             inclusivity. Our mission is to reveal the potential of art as a universal language capable of
             connecting people from diverse backgrounds, abilities, and interests.
-          </p>
+          </motion.p>
 
           <Link className="main-about-cta" href="/about">
             read more
@@ -388,30 +448,36 @@ export function MainPage() {
 
           <div className="main-gallery-grid">
             <div className="main-gallery-left">
-            <div className="main-gallery-thumbs">
-              {galleryImages.map((image, index) => (
-                <button
-                  type="button"
-                  className={`main-gallery-thumb ${activeGalleryImage === image ? "is-active" : ""}`}
-                  key={image}
-                  onClick={() => setActiveGalleryImage(image)}
-                  aria-label={`Show gallery slide ${index + 1}`}
-                >
-                  <span className="main-gallery-thumb-media" aria-hidden>
-                    <Image
-                      src={image}
-                      alt={`Gallery thumbnail ${index + 1}`}
-                      fill
-                      className="main-gallery-thumb-image"
-                    />
-                  </span>
-                  <span className="main-gallery-thumb-index">{`0${index + 1}/`}</span>
-                </button>
-              ))}
-            </div>
-            <button type="button" className="main-gallery-drag">
-              drag
-            </button>
+              <div className="main-gallery-thumbs">
+                {galleryImages.map((image, index) => (
+                  <button
+                    type="button"
+                    className={`main-gallery-thumb ${activeGalleryImage === image ? "is-active" : ""}`}
+                    key={image}
+                    onClick={() => setActiveGalleryImage(image)}
+                    aria-label={`Show gallery slide ${index + 1}`}
+                  >
+                    <span className="main-gallery-thumb-media" aria-hidden>
+                      <Image
+                        src={image}
+                        alt={`Gallery thumbnail ${index + 1}`}
+                        fill
+                        className="main-gallery-thumb-image"
+                      />
+                    </span>
+                    <span className="main-gallery-thumb-index">{`0${index + 1}/`}</span>
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                className={`main-gallery-drag ${reducedMotion || isCompact ? "is-static" : ""}`}
+                onPointerMove={handleGalleryDragPointerMove}
+                onPointerLeave={resetGalleryDragMagnet}
+                onPointerUp={resetGalleryDragMagnet}
+              >
+                drag
+              </button>
             </div>
 
             <article className="main-gallery-feature">
@@ -557,7 +623,16 @@ export function MainPage() {
             in a dialogue
           </h2>
 
-          <p className="main-residents-intro">{residentsIntroText}</p>
+          <motion.p
+            className="main-residents-intro"
+            variants={textReveal}
+            initial={reducedMotion ? undefined : "hidden"}
+            whileInView={reducedMotion ? undefined : "visible"}
+            viewport={{ once: true, margin: "-6%" }}
+            transition={{ duration: 0.46, delay: 0.08, ease: "easeOut" }}
+          >
+            {residentsIntroText}
+          </motion.p>
 
           <Link className="main-residents-cta" href="/about#residents">
             became our resident
