@@ -146,6 +146,12 @@ export interface ResidentsDesktopCard {
   entries: ResidentsEntry[];
 }
 
+export interface ResidentsMobileAccordionItem {
+  title: string;
+  preview: string;
+  rows: ResidentsEntry[];
+}
+
 export const residentsDesktopCards: ResidentsDesktopCard[] = [
   {
     title: "Theatre troupe",
@@ -225,41 +231,43 @@ export const residentsDesktopCards: ResidentsDesktopCard[] = [
   },
 ];
 
-export const residentsMobileCollapsed = [
+const [
+  theatreResidents,
+  visualArtistsResidents,
+  publicTalkResidents,
+  handMadeResidents,
+] = residentsDesktopCards as [
+  ResidentsDesktopCard,
+  ResidentsDesktopCard,
+  ResidentsDesktopCard,
+  ResidentsDesktopCard,
+];
+
+export const residentsMobileAccordions: ResidentsMobileAccordionItem[] = [
   {
-    title: "Theatre troupe",
-    text: "The art project for people with Down syndrome. Directed by Barbara Fink and promote for 5 years already.",
+    title: "HandMade Shopes",
+    preview: handMadeResidents.entries[0].text,
+    rows: handMadeResidents.entries,
   },
   {
-    title: "Visual Artists",
-    text: "Creator from Lithuania, who make graphical novels by hand about social issues.",
+    title: theatreResidents.title,
+    preview: theatreResidents.entries[0].text,
+    rows: theatreResidents.entries,
   },
   {
-    title: "Public talk lectors",
-    text: "A leading speaker at the Museum of Modern Art and the Parsons School of Design.",
+    title: visualArtistsResidents.title,
+    preview: visualArtistsResidents.entries[0].text,
+    rows: visualArtistsResidents.entries,
+  },
+  {
+    title: publicTalkResidents.title,
+    preview: publicTalkResidents.entries[0].text,
+    rows: publicTalkResidents.entries,
   },
 ];
 
 export const residentsIntroText =
   "On a critical social issues, including disability and social integration. Participate in open discussions, and attend workshops that broaden horizons.";
-
-export const residentsMobileOpen = {
-  title: "HandMade Shopes",
-  rows: [
-    {
-      name: "PLAYA`S",
-      text: "A shop featuring rare editions, collectible prints, and books with handcrafted covers.",
-    },
-    {
-      name: "AbyStore",
-      text: "Home decor and more. All items are handmade, and the proceeds from purchases go to charity.",
-    },
-    {
-      name: "COMMITED",
-      text: "Find new unique pieces for your personal style by designer Fred Audry and Lana Holmes",
-    },
-  ],
-};
 
 export const partnersTop = [
   "Time LLC",

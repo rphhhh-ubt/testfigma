@@ -24,9 +24,8 @@ import {
   partnersBottom,
   partnersTop,
   residentsDesktopCards,
+  residentsMobileAccordions,
   residentsIntroText,
-  residentsMobileCollapsed,
-  residentsMobileOpen,
   shopCategories,
   shopItems,
   teamMobileCards,
@@ -58,6 +57,9 @@ export function MainPage() {
 
   const [shopCategory, setShopCategory] = useState<ShopCategory>("decor");
   const [agendaStartIndex, setAgendaStartIndex] = useState(0);
+  const [activeResidentsAccordion, setActiveResidentsAccordion] = useState(
+    residentsMobileAccordions[0].title,
+  );
   const [zineCategory, setZineCategory] = useState<(typeof zineCategories)[number]>(
     "All",
   );
@@ -579,29 +581,38 @@ export function MainPage() {
           </div>
 
           <div className="main-residents-mobile-table" aria-label="Residents mobile table">
-            {residentsMobileCollapsed.map((resident) => (
-              <article key={resident.title} className="main-residents-mobile-row">
-                <h3>{resident.title}</h3>
-                <p>{resident.text}</p>
-                <span className="main-residents-row-arrow" aria-hidden />
-              </article>
-            ))}
+            {residentsMobileAccordions.map((resident, index) => {
+              const isOpen = resident.title === activeResidentsAccordion;
+              const panelId = `residents-mobile-panel-${index}`;
 
-            <article className="main-residents-mobile-open">
-              <div className="main-residents-mobile-open-head">
-                <h3>{residentsMobileOpen.title}</h3>
-                <span className="main-residents-row-arrow is-open" aria-hidden />
-              </div>
+              return (
+                <article key={resident.title} className={`main-residents-mobile-item ${isOpen ? "is-open" : ""}`}>
+                  <button
+                    type="button"
+                    className="main-residents-mobile-head"
+                    onClick={() => setActiveResidentsAccordion(resident.title)}
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
+                  >
+                    <span className="main-residents-mobile-title">{resident.title}</span>
+                    <span className={`main-residents-row-arrow ${isOpen ? "is-open" : ""}`} aria-hidden />
+                  </button>
 
-              <div className="main-residents-mobile-open-body">
-                {residentsMobileOpen.rows.map((row) => (
-                  <div key={row.name} className="main-residents-mobile-open-row">
-                    <h4>{row.name}</h4>
-                    <p>{row.text}</p>
+                  <div className="main-residents-mobile-preview" aria-hidden={isOpen}>
+                    <p>{resident.preview}</p>
                   </div>
-                ))}
-              </div>
-            </article>
+
+                  <div className="main-residents-mobile-panel" id={panelId} aria-hidden={!isOpen}>
+                    {resident.rows.map((row) => (
+                      <div key={`${resident.title}-${row.name}`} className="main-residents-mobile-open-row">
+                        <h4>{row.name}</h4>
+                        <p>{row.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </motion.section>

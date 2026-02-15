@@ -1575,26 +1575,41 @@ a {
   display: none;
 }
 
-.main-residents-mobile-open {
-  border-bottom: 1px solid #999999;
+.main-residents-mobile-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.main-residents-mobile-open-head {
+.main-residents-mobile-head {
+  width: 100%;
+  border: 0;
   min-height: 40px;
-  background: var(--lime);
-  display: flex;
+  background: transparent;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
   gap: 10px;
-  padding: 0 6px 0 0;
+  text-align: left;
+  cursor: pointer;
 }
 
-.main-residents-mobile-open-head h3 {
+.main-residents-mobile-title {
   margin: 0;
+  display: block;
   font-family: var(--font-display), sans-serif;
   font-size: 18px;
   line-height: 1;
+  font-weight: 700;
   text-transform: capitalize;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.main-residents-mobile-item.is-open .main-residents-mobile-head {
+  background: var(--lime);
+  padding: 0 6px 0 0;
+}
+
+.main-residents-mobile-item.is-open .main-residents-mobile-title {
   color: var(--black);
 }
 
@@ -1615,23 +1630,47 @@ a {
   animation: residents-arrow-open 1.8s ease-in-out infinite;
 }
 
-.main-residents-mobile-open p {
-  margin: 16px 0 0;
+.main-residents-mobile-preview {
+  overflow: hidden;
+  max-height: 88px;
+  opacity: 1;
+  padding: 2px 0 12px;
+  transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
+}
+
+.main-residents-mobile-preview p {
+  margin: 0;
   font-size: 16px;
   line-height: 1.15;
   letter-spacing: -0.04em;
   color: var(--white);
 }
 
-.main-residents-mobile-open-body {
-  display: grid;
-  gap: 12px;
-  padding: 12px 0 16px;
+.main-residents-mobile-item.is-open .main-residents-mobile-preview {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+}
+
+.main-residents-mobile-panel {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  padding: 0;
+  transition: max-height 0.45s cubic-bezier(0.2, 0.74, 0.32, 1), opacity 0.22s ease, padding 0.45s ease;
+}
+
+.main-residents-mobile-item.is-open .main-residents-mobile-panel {
+  max-height: 760px;
+  opacity: 1;
+  padding: 0 0 16px;
 }
 
 .main-residents-mobile-open-row {
   display: grid;
   gap: 8px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .main-residents-mobile-open-row h4 {
@@ -1646,48 +1685,6 @@ a {
 
 .main-residents-mobile-open-row p {
   margin: 0;
-}
-
-.main-residents-mobile-row {
-  min-height: 70px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: auto auto;
-  align-items: start;
-  gap: 4px 10px;
-  padding: 10px 0 12px;
-}
-
-.main-residents-mobile-row h3 {
-  margin: 0;
-  font-family: var(--font-display), sans-serif;
-  font-size: 14px;
-  line-height: 1.15;
-  letter-spacing: -0.04em;
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: 400;
-  text-transform: capitalize;
-}
-
-.main-residents-mobile-row p {
-  margin: 0;
-  max-width: 100%;
-  color: rgba(255, 255, 255, 1);
-  font-size: 16px;
-  line-height: 1.15;
-  letter-spacing: -0.04em;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
-}
-
-.main-residents-mobile-row .main-residents-row-arrow {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
 }
 
 @keyframes residents-arrow-row {
@@ -2448,9 +2445,9 @@ a {
     margin-top: 16px;
   }
 
-  .main-residents-mobile-open-head {
+  .main-residents-mobile-head {
     min-height: 40px;
-    padding: 0 2px 0 2px;
+    padding: 0;
   }
 
   .main-residents-row-arrow {
@@ -2460,15 +2457,9 @@ a {
     border-right-width: 2px;
   }
 
-  .main-residents-mobile-row {
-    gap: 6px 10px;
-    padding: 10px 0 12px;
-  }
-
-  .main-residents-mobile-row p {
-    max-width: 100%;
-    font-size: 16px;
-    line-height: 1.15;
+  .main-residents-mobile-preview {
+    max-height: 96px;
+    padding: 2px 0 10px;
   }
 
   .main-residents-mobile-open-row {
@@ -2487,8 +2478,7 @@ a {
     text-transform: none;
   }
 
-  .main-residents-mobile-open-head h3,
-  .main-residents-mobile-row h3 {
+  .main-residents-mobile-title {
     text-transform: none;
   }
 
