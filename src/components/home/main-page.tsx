@@ -10,6 +10,11 @@ import {
 } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import {
+  animate,
+  stagger,
+  type JSAnimation,
+} from "animejs";
+import {
   AnimatePresence,
   motion,
   useReducedMotion,
@@ -54,6 +59,8 @@ const clamp = (value: number, min: number, max: number) =>
 
 export function MainPage() {
   const reducedMotion = useReducedMotion();
+  const mainHomeRef = useRef<HTMLDivElement | null>(null);
+  const galleryDragRef = useRef<HTMLButtonElement | null>(null);
   const [isCompact, setIsCompact] = useState(false);
   const heroRef = useRef<HTMLElement | null>(null);
   const { scrollYProgress } = useScroll({
@@ -100,6 +107,109 @@ export function MainPage() {
       mediaQuery.removeEventListener("change", syncCompact);
     };
   }, []);
+
+  useEffect(() => {
+    if (reducedMotion) {
+      return;
+    }
+
+    const root = mainHomeRef.current;
+    if (!root) {
+      return;
+    }
+
+    const ambientAnimations: JSAnimation[] = [];
+    const heroOverlay = root.querySelector<HTMLElement>(".main-folder-overlay");
+    const aboutPoster = root.querySelector<HTMLElement>(".main-about-poster");
+    const sectionLabels = root.querySelectorAll<HTMLElement>(".main-label");
+
+    if (heroOverlay) {
+      ambientAnimations.push(
+        animate(heroOverlay, {
+          opacity: 0.9,
+          duration: 7200,
+          ease: "inOutSine",
+          loop: true,
+          alternate: true,
+        }),
+      );
+    }
+
+    if (aboutPoster) {
+      ambientAnimations.push(
+        animate(aboutPoster, {
+          translateY: 4,
+          rotate: 0.45,
+          duration: 6400,
+          ease: "inOutSine",
+          loop: true,
+          alternate: true,
+        }),
+      );
+    }
+
+    if (sectionLabels.length > 0) {
+      ambientAnimations.push(
+        animate(sectionLabels, {
+          opacity: 0.88,
+          duration: 4200,
+          delay: stagger(260),
+          ease: "inOutSine",
+          loop: true,
+          alternate: true,
+        }),
+      );
+    }
+
+    if (!isCompact && galleryDragRef.current) {
+      ambientAnimations.push(
+        animate(galleryDragRef.current, {
+          "--drag-idle-scale": 1.045,
+          duration: 2300,
+          ease: "inOutSine",
+          loop: true,
+          alternate: true,
+        }),
+      );
+    }
+
+    return () => {
+      ambientAnimations.forEach((animation) => {
+        animation.revert();
+      });
+    };
+  }, [isCompact, reducedMotion]);
+
+  useEffect(() => {
+    if (reducedMotion || !isCompact) {
+      return;
+    }
+
+    const root = mainHomeRef.current;
+    if (!root) {
+      return;
+    }
+
+    const rows = root.querySelectorAll<HTMLElement>(
+      ".main-residents-mobile-item.is-open .main-residents-mobile-open-row",
+    );
+
+    if (rows.length === 0) {
+      return;
+    }
+
+    const rowsAnimation = animate(rows, {
+      opacity: { from: 0, to: 1 },
+      translateY: { from: 12, to: 0 },
+      duration: 420,
+      delay: stagger(55),
+      ease: "outQuart",
+    });
+
+    return () => {
+      rowsAnimation.revert();
+    };
+  }, [activeResidentsAccordion, isCompact, reducedMotion]);
 
   const filteredZinePosts = useMemo(() => {
     if (zineCategory === "All") {
@@ -195,7 +305,7 @@ export function MainPage() {
   };
 
   return (
-    <div className="main-home">
+    <div className="main-home" ref={mainHomeRef}>
       <div className="main-home-noise" aria-hidden />
 
       <section ref={heroRef} className="main-folder" aria-label="Hero section">
@@ -471,6 +581,7 @@ export function MainPage() {
               </div>
               <button
                 type="button"
+                ref={galleryDragRef}
                 className={`main-gallery-drag ${reducedMotion || isCompact ? "is-static" : ""}`}
                 onPointerMove={handleGalleryDragPointerMove}
                 onPointerLeave={resetGalleryDragMagnet}
