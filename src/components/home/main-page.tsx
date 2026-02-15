@@ -24,6 +24,7 @@ import {
   partnersBottom,
   partnersTop,
   residentsDesktopCards,
+  residentsIntroText,
   residentsMobileCollapsed,
   residentsMobileOpen,
   shopCategories,
@@ -340,7 +341,14 @@ export function MainPage() {
               understanding, and empowered.
             </p>
 
-            <div className="main-about-poster" aria-hidden />
+            <div className="main-about-poster" aria-hidden>
+              <Image
+                src="/figma-home/about-circle-stripes.svg"
+                alt=""
+                fill
+                className="main-about-poster-image"
+              />
+            </div>
 
             <p>
               Through our initiatives, we aim to foster an environment where diverse voices are not only
@@ -547,6 +555,8 @@ export function MainPage() {
             in a dialogue
           </h2>
 
+          <p className="main-residents-intro">{residentsIntroText}</p>
+
           <Link className="main-residents-cta" href="/about#residents">
             became our resident
           </Link>
@@ -570,14 +580,17 @@ export function MainPage() {
 
           <div className="main-residents-mobile-table" aria-label="Residents mobile table">
             {residentsMobileCollapsed.map((resident) => (
-              <article key={resident} className="main-residents-mobile-row">
-                <h3>{resident}</h3>
+              <article key={resident.title} className="main-residents-mobile-row">
+                <h3>{resident.title}</h3>
+                <p>{resident.text}</p>
+                <span className="main-residents-row-arrow" aria-hidden />
               </article>
             ))}
 
             <article className="main-residents-mobile-open">
               <div className="main-residents-mobile-open-head">
                 <h3>{residentsMobileOpen.title}</h3>
+                <span className="main-residents-row-arrow is-open" aria-hidden />
               </div>
 
               <div className="main-residents-mobile-open-body">

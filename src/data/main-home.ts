@@ -226,10 +226,22 @@ export const residentsDesktopCards: ResidentsDesktopCard[] = [
 ];
 
 export const residentsMobileCollapsed = [
-  "Theatre troupe",
-  "Visual Artists",
-  "Public talk lectors",
+  {
+    title: "Theatre troupe",
+    text: "The art project for people with Down syndrome. Directed by Barbara Fink and promote for 5 years already.",
+  },
+  {
+    title: "Visual Artists",
+    text: "Creator from Lithuania, who make graphical novels by hand about social issues.",
+  },
+  {
+    title: "Public talk lectors",
+    text: "A leading speaker at the Museum of Modern Art and the Parsons School of Design.",
+  },
 ];
+
+export const residentsIntroText =
+  "On a critical social issues, including disability and social integration. Participate in open discussions, and attend workshops that broaden horizons.";
 
 export const residentsMobileOpen = {
   title: "HandMade Shopes",
